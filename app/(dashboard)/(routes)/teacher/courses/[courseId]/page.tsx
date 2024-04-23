@@ -4,8 +4,9 @@ import IconBadge from "@/components/common/icon-badge";
 import CategoryForm from "@/components/dashboard/teacher/courses/category-form";
 import DescriptionForm from "@/components/dashboard/teacher/courses/description-form";
 import ImageForm from "@/components/dashboard/teacher/courses/image-form";
+import PriceForm from "@/components/dashboard/teacher/courses/price-form";
 import TitleForm from "@/components/dashboard/teacher/courses/title-form";
-import { LayoutDashboard } from "lucide-react";
+import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 
 interface CoursePageProps {
     params: {courseId:string},
@@ -53,6 +54,28 @@ const CoursePage = async(props:CoursePageProps) => {
                 <DescriptionForm description={course.description} courseId={course.id}  />
                 <ImageForm imageUrl={course.imageUrl} courseId={course.id} />
                 <CategoryForm categoryId={course.categoryId} courseId={course.id} options={categories.map((category)=> ({label:category.name,value:category.id}))} />
+            </div>
+            <div className="space-y-6">
+                <div className="">
+                    <div className="flex items-center gap-x-2">
+                        <IconBadge icon={ListChecks} />
+                        <h2 className="text-xl">
+                            Course chapters
+                        </h2>
+                    </div>
+                    <div className="">
+                        TODO:chapters
+                    </div>
+                </div>
+                <div className="">
+                    <div className="flex items-center gap-x-2">
+                        <IconBadge icon={CircleDollarSign} />
+                        <h2 className="text-xl">
+                            Sell your course
+                        </h2>
+                    </div>
+                    <PriceForm price={course.price} courseId={course.id} />
+                </div>
             </div>
         </div>
     </div>
