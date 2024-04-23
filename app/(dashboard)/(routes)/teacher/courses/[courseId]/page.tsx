@@ -1,5 +1,7 @@
+import { getCategories } from "@/actions/categories";
 import { getCourseById } from "@/actions/courses";
 import IconBadge from "@/components/common/icon-badge";
+import CategoryForm from "@/components/dashboard/teacher/courses/category-form";
 import DescriptionForm from "@/components/dashboard/teacher/courses/description-form";
 import ImageForm from "@/components/dashboard/teacher/courses/image-form";
 import TitleForm from "@/components/dashboard/teacher/courses/title-form";
@@ -12,7 +14,9 @@ interface CoursePageProps {
 const CoursePage = async(props:CoursePageProps) => {
 
     const {courseId} = props.params;
-    const course = await getCourseById(courseId);
+    const coursePromise = getCourseById(courseId);
+    const categoriesPromise = getCategories();
+    const [course,categories] = await Promise.all([coursePromise,categoriesPromise]);
     const requiredFields = [
         course.title,
         course.description,
@@ -48,6 +52,7 @@ const CoursePage = async(props:CoursePageProps) => {
                 <TitleForm title={course.title} courseId={course.id}  />
                 <DescriptionForm description={course.description} courseId={course.id}  />
                 <ImageForm imageUrl={course.imageUrl} courseId={course.id} />
+                <CategoryForm categoryId={course.categoryId} courseId={course.id} options={categories.map((category)=> ({label:category.name,value:category.id}))} />
             </div>
         </div>
     </div>
