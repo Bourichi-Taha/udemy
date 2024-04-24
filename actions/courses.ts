@@ -13,6 +13,13 @@ export const getCourseById = async (courseId: string) => {
         where: {
             id: courseId,
             userId: userId
+        },
+        include: {
+            attachments :{
+                orderBy : {
+                    createdAt: "desc",
+                }
+            }
         }
     });
     if (!course) {
