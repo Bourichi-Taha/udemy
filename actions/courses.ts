@@ -19,6 +19,11 @@ export const getCourseById = async (courseId: string) => {
                 orderBy : {
                     createdAt: "desc",
                 }
+            },
+            chapters: {
+                orderBy : {
+                    position: "asc",
+                }
             }
         }
     });

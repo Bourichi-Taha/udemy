@@ -30,8 +30,8 @@ model Course {
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Chapters  Chapter[]
-  Purchases Purchase[]
+  chapters  Chapter[]
+  purchases Purchase[]
 
   @@index([categoryId])
 }
@@ -94,7 +94,7 @@ model UserProgress {
   id     String @id @default(uuid())
   userId String
 
-  Chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter   Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId String
 
   isCompleted Boolean  @default(false)

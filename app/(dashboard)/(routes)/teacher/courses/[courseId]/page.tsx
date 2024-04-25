@@ -3,6 +3,7 @@ import { getCourseById } from "@/actions/courses";
 import IconBadge from "@/components/common/icon-badge";
 import AttachementForm from "@/components/dashboard/teacher/courses/attachement-form";
 import CategoryForm from "@/components/dashboard/teacher/courses/category-form";
+import ChaptersForm from "@/components/dashboard/teacher/courses/chapters-form";
 import DescriptionForm from "@/components/dashboard/teacher/courses/description-form";
 import ImageForm from "@/components/dashboard/teacher/courses/image-form";
 import PriceForm from "@/components/dashboard/teacher/courses/price-form";
@@ -24,7 +25,8 @@ const CoursePage = async (props: CoursePageProps) => {
         course.description,
         course.imageUrl,
         course.price,
-        course.categoryId
+        course.categoryId,
+        course.chapters.some((chapter)=>chapter.isPublished),
     ];
     const totalFields = requiredFields.length;
     const completedFields = requiredFields.filter(Boolean).length;
@@ -65,7 +67,8 @@ const CoursePage = async (props: CoursePageProps) => {
                             </h2>
                         </div>
                         <div className="">
-                            TODO:chapters
+                            <ChaptersForm chapters={course.chapters} courseId={course.id} />
+
                         </div>
                     </div>
                     <div className="">
