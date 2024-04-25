@@ -13,17 +13,15 @@ export async function DELETE(req:Request,{params}:{params:{attachmentId:string;c
             where:{
                 id:courseId,
                 userId:userId
-            },
-            include:{
-                attachments:true
             }
         });
-        if (!course || !course.attachments.find((att)=>att.id === attachmentId)) {
+        if (!course) {
             return new NextResponse("Unauthorized!", { status: 401 });
         }
         const deleted=await db.attachment.delete({
             where:{
                 id:attachmentId,
+                courseId:courseId
             }
         });
         return NextResponse.json(deleted);
