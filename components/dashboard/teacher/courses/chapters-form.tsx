@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Chapter } from "@prisma/client";
 import axios from "axios";
-import { Pencil, PlusCircle } from "lucide-react";
+import { Loader2, Pencil, PlusCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
+import ChaptersList from "./chapters-list";
 
 interface ChaptersFormProps {
     chapters: Chapter[] | null;
@@ -50,8 +51,27 @@ const ChaptersForm = (props: ChaptersFormProps) => {
         }
     }
 
+    const onReorder = async(data:{id:string,position:number}[]) => {
+        try {
+            setIsUpdating(true);
+            await axios.put(`/api/courses/${courseId}/chapters/reorder`,{data});
+            toast.success("Chapters updated successfully✨");
+        } catch (error) {
+            toast.error("Something went wrong!");
+        }finally{
+            setIsUpdating(false);
+        }
+    }
+
     return (
-        <div className="mt-6 border bg-slate-100 rounded-md p-4">
+        <div className="mt-6 border bg-slate-100 rounded-md p-4 relative">
+            {
+                isUpdating && (
+                    <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-md flex items-center justify-center">
+                        <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+                    </div>
+                )
+            }
             <div className="font-medium flex items-center justify-between ">
                 Course chapters
                 <Button variant={"ghost"} onClick={toggleCreating}>
@@ -95,9 +115,10 @@ const ChaptersForm = (props: ChaptersFormProps) => {
                 !isCreating && (
                     <div className={cn("text-sm mt-2",!chapters?.length && "text-slate-500 italic")}>
                         {
-                            !chapters?.length && "No chapters."
+                            !chapters?.length ? "No chapters." : (
+                                <ChaptersList onEdit={()=>{}} onReorder={onReorder} items={chapters} />
+                            )
                         }
-                        {/* TODO: map over exsisting chapters */}
                     </div>
                 )
             }
