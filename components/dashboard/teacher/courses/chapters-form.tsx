@@ -63,6 +63,10 @@ const ChaptersForm = (props: ChaptersFormProps) => {
         }
     }
 
+    const onEdit = (id:string) => {
+        router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+    }
+
     return (
         <div className="mt-6 border bg-slate-100 rounded-md p-4 relative">
             {
@@ -116,7 +120,7 @@ const ChaptersForm = (props: ChaptersFormProps) => {
                     <div className={cn("text-sm mt-2",!chapters?.length && "text-slate-500 italic")}>
                         {
                             !chapters?.length ? "No chapters." : (
-                                <ChaptersList onEdit={()=>{}} onReorder={onReorder} items={chapters} />
+                                <ChaptersList onEdit={onEdit} onReorder={onReorder} items={chapters} />
                             )
                         }
                     </div>

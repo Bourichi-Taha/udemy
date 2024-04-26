@@ -79,3 +79,9 @@ html,body,:root{
     @apply bg-background text-foreground;
   }
 }
+
+.ql-container,.ql-editor {
+  font-size: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
