@@ -1,8 +1,8 @@
 "use client";
-import Editor from "@/components/common/editor";
-import Preview from "@/components/common/preview";
+
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -13,19 +13,17 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
 
-interface DescriptionFormProps {
-    description: string|null;
+interface AccessFormProps {
+    isFree: boolean;
     courseId: string;
     chapterId:string;
 }
 const formSchema = z.object({
-    description: z.string().min(1, {
-        message: "Description is required!"
-    }),
+    isFree: z.boolean().default(false),
 });
 
-const DescriptionForm = (props: DescriptionFormProps) => {
-    const { courseId,description,chapterId } = props;
+const AccessForm = (props: AccessFormProps) => {
+    const { courseId,isFree,chapterId } = props;
     const [isEditing, setIsEditing] = useState(false);
     const router = useRouter();
     const toggleEdit = () => {
@@ -34,7 +32,7 @@ const DescriptionForm = (props: DescriptionFormProps) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            description: description || "",
+            isFree: !!isFree,
         },
     });
     const { isSubmitting, isValid } = form.formState;
@@ -42,7 +40,7 @@ const DescriptionForm = (props: DescriptionFormProps) => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}`,values);
-            toast.success("Description changed successfully✨");
+            toast.success("Access changed successfully✨");
             toggleEdit();
             router.refresh();
         } catch (error) {
@@ -53,7 +51,7 @@ const DescriptionForm = (props: DescriptionFormProps) => {
     return (
         <div className="mt-6 border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between ">
-                Chapter description
+                Chapter Access
                 <Button variant={"ghost"} onClick={toggleEdit}>
                     {
                         isEditing ?
@@ -64,7 +62,7 @@ const DescriptionForm = (props: DescriptionFormProps) => {
                             (
                                 <>
                                     <Pencil className="h-4 w-4 mr-2" />
-                                    Edit description
+                                    Edit access
                                 </>
                             )
                     }
@@ -73,21 +71,30 @@ const DescriptionForm = (props: DescriptionFormProps) => {
             {
                 !isEditing ?
                 (
-                    <div className={cn("text-sm mt-2",!description && "text-slate-500 italic")}>
-                        {description ? (
-                            <Preview value={description} />
-                        ) : "No description"}
-                    </div>
+                    <p className={cn("text-sm mt-2",!isFree && "text-slate-500 italic")}>
+                        {
+                            isFree ? (
+                                <>This chapter is free for preview.</>
+                            ) : (
+                                <>This chapter is not free.</>
+                            )
+                        }
+                    </p>
                 )
                 :
                 (
                     <Form {...form} >
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-                            <FormField control={form.control} name="description" render={({field})=>(
-                                <FormItem>
+                            <FormField control={form.control} name="isFree" render={({field})=>(
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                                     <FormControl>
-                                        <Editor  {...field} />
+                                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                     </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormDescription>
+                                            Check this box if you want to make this chapter free for preview.
+                                        </FormDescription>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -105,4 +112,4 @@ const DescriptionForm = (props: DescriptionFormProps) => {
     )
 }
 
-export default DescriptionForm
+export default AccessForm
