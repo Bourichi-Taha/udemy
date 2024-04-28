@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
+import toast from "react-hot-toast";
 
 export const getCourseById = async (courseId: string) => {
     const { userId } = auth();
@@ -31,4 +32,21 @@ export const getCourseById = async (courseId: string) => {
         return redirect("/");
     }
     return course;
+}
+
+export const getCourses = async () => {
+    const { userId } = auth();
+    if (!userId) {
+        toast.error("Unauthorized!");
+        return redirect("/");
+    }
+    const courses = await db.course.findMany({
+        where: {
+            userId:userId
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    });
+    return courses || [];
 }
