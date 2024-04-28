@@ -1,8 +1,11 @@
 
 import { getChapterForCoursePage } from "@/actions/chapters";
 import Banner from "@/components/common/banner";
+import Preview from "@/components/common/preview";
 import CourseEnrollButton from "@/components/course/chapters/course-enroll-button";
 import VideoPlayer from "@/components/course/chapters/video-player";
+import { Separator } from "@/components/ui/separator";
+import { File } from "lucide-react";
 import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -69,6 +72,27 @@ const SingleChapterIdPage = async (props: SingleChapterIdPageProps) => {
               )
             }
           </div>
+          <Separator />
+          <div className="">
+            <Preview value={chapter.description!} />
+          </div>
+          {
+            !!attachements.length && (
+              <>
+                <Separator />
+                <div className="p-4">
+                  {attachements.map((attachment)=>(
+                    <a href={attachment.url} target="_blank" key={attachment.id} className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline" >
+                      <File />
+                      <p className="line-clamp-1">
+                        {attachment.name}
+                      </p>
+                    </a>
+                  ))}
+                </div>
+              </>
+            )
+          }
         </div>
       </div>
     </div>

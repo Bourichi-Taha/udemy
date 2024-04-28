@@ -11,9 +11,9 @@ interface CourseEnrollButtonProps{
 const CourseEnrollButton = (props:CourseEnrollButtonProps) => {
 
     const {courseId,price} = props;
-
+    //TODO: integrate stripe checkout
   return (
-    <Button>
+    <Button className="w-full md:w-auto" size={"sm"}>
         Enroll for {formatPrice(price)}
     </Button>
   )
