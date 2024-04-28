@@ -26,11 +26,11 @@ const ChapterActions = (props: ChapterActionsProps) => {
             setIsLoading(true);
 
             if (isPublished) {
-                await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}/unpublish`);
+                await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/unpublish`);
                 toast.success("Chapter unpublished ✨");
 
             }else{
-                await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}/publish`);
+                await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/publish`);
                 toast.success("Chapter published ✨");
             }
 
