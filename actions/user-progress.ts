@@ -33,7 +33,6 @@ export const getProgress = async (userId:string,courseId:string):Promise<number>
         return progressPercentage;
 
     } catch (error) {
-        toast.error("Ops! something went wrong!");
         console.log("[GET_PROGRESS]",error);
         return 0;
     }

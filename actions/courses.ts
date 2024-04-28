@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { Category, Course } from "@prisma/client";
 import { redirect } from "next/navigation";
-import toast from "react-hot-toast";
 import { getProgress } from "./user-progress";
 
 export const getCourseByIdWithAttachmentsAndChapters = async (courseId: string) => {
@@ -61,7 +60,6 @@ export const getCourseByIdWithPublishedChaptersAndUserProgress = async (userId:s
         }
     });
     if (!course) {
-        toast.error("Course not found!");
         return redirect("/");
     }
     return course;
@@ -70,7 +68,6 @@ export const getCourseByIdWithPublishedChaptersAndUserProgress = async (userId:s
 export const getCourses = async () => {
     const { userId } = auth();
     if (!userId) {
-        toast.error("Unauthorized!");
         return redirect("/");
     }
     const courses = await db.course.findMany({
@@ -99,7 +96,6 @@ export const getCoursesWithCategory = async ({ title, categoryId }: GetCoursesWi
     try {
         const { userId } = auth();
         if (!userId) {
-            toast.error("Unauthorized!");
             return redirect("/");
         }
         const courses = await db.course.findMany({
@@ -153,7 +149,6 @@ export const getCoursesWithCategory = async ({ title, categoryId }: GetCoursesWi
 
     } catch (error) {
         console.log("[GET_COURSES_WITH_CATEGORY]", error);
-        toast.error("Ops! Something went wrong!🔴");
         return [];
     }
 }
