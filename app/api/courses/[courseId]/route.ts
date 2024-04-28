@@ -1,7 +1,13 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
+import Mux from '@mux/mux-node';
 
+const { video } = new Mux({
+    tokenId: process.env.MUX_TOKEN_ID!,
+    tokenSecret: process.env.MUX_TOKEN_SECRET!
+}
+)
 
 export async function GET(req: Request, { params }: { params: { courseId: string } }) {
     try {
@@ -65,12 +71,24 @@ export async function DELETE(req: Request, { params }: { params: { courseId: str
             where: {
                 id: courseId,
                 userId: userId
+            },
+            include : {
+                chapters : {
+                    include: {
+                        muxData:true,
+                    }
+                }
             }
         });
         if (!course) {
             return new NextResponse("Unauthorized!", { status: 401 });
         }
 
+        for(const chapter of course.chapters){
+            if (chapter.muxData?.assetId) {
+                await video.assets.delete(chapter.muxData?.assetId);
+            }
+        }
 
         const deletedCourse = await db.course.delete({
             where: {
@@ -78,7 +96,6 @@ export async function DELETE(req: Request, { params }: { params: { courseId: str
             }
         });
 
-        
 
         return NextResponse.json(deletedCourse);
 
