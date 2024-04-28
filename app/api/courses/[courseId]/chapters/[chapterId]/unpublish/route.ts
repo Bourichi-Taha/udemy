@@ -24,9 +24,6 @@ export async function PATCH(req: Request, { params }: { params: { chapterId: str
             where: {
                 id: chapterId,
                 courseId: courseId
-            },
-            include: {
-                muxData:true
             }
         });
         if (!chapter) {
