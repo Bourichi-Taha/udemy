@@ -2,9 +2,10 @@
 
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
+import { Category } from "@prisma/client";
 import { redirect } from "next/navigation";
 
-export const getCategories = async() => {
+export const getCategories = async():Promise<Category[]> => {
     const { userId } = auth();
     if (!userId) {
         return redirect("/");
