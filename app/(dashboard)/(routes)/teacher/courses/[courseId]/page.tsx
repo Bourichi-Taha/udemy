@@ -1,5 +1,5 @@
 import { getCategories } from "@/actions/categories";
-import { getCourseById } from "@/actions/courses";
+import { getCourseByIdWithAttachmentsAndChapters } from "@/actions/courses";
 import Banner from "@/components/common/banner";
 import IconBadge from "@/components/common/icon-badge";
 import AttachementForm from "@/components/dashboard/teacher/courses/attachement-form";
@@ -19,7 +19,7 @@ interface CoursePageProps {
 const CoursePage = async (props: CoursePageProps) => {
 
     const { courseId } = props.params;
-    const coursePromise = getCourseById(courseId);
+    const coursePromise = getCourseByIdWithAttachmentsAndChapters(courseId);
     const categoriesPromise = getCategories();
     const [course, categories] = await Promise.all([coursePromise, categoriesPromise]);
     const requiredFields = [

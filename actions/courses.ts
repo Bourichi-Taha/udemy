@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import { getProgress } from "./user-progress";
 
-export const getCourseById = async (courseId: string) => {
+export const getCourseByIdWithAttachmentsAndChapters = async (courseId: string) => {
     const { userId } = auth();
     if (!userId) {
         return redirect("/");
@@ -31,6 +31,37 @@ export const getCourseById = async (courseId: string) => {
         }
     });
     if (!course) {
+        return redirect("/");
+    }
+    return course;
+}
+export const getCourseByIdWithPublishedChaptersAndUserProgress = async (userId:string,courseId: string) => {
+
+    const course = await db.course.findUnique({
+        where: {
+            id: courseId,
+        },
+        include: {
+            chapters: {
+                orderBy: {
+                    position: "asc",
+                },
+                where: {
+                    isPublished: true,
+                },
+                include: {
+                    userProgress:{
+                        where: {
+                            userId,
+                        }
+                    }
+                }
+            },
+            
+        }
+    });
+    if (!course) {
+        toast.error("Course not found!");
         return redirect("/");
     }
     return course;
