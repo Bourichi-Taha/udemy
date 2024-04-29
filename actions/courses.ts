@@ -182,17 +182,17 @@ export const getDashboardCourses = async (userId:string):Promise<DashboardCourse
 
         for(let course of courses){
             const progress = await getProgress(userId,course.id);
-            course["progress"] = progress;
+            course["progress"] = progress || 0;
         }
 
         const completedCourses = courses.filter((course)=>{
-            if (course.progress && course.progress >= 100) {
+            if (course.progress !== null && course.progress >= 100) {
                 return true;
             }
             return false;
         });
         const coursesInProgress = courses.filter((course)=>{
-            if (course.progress && course.progress < 100) {
+            if (course.progress !== null && course.progress < 100) {
                 return true;
             }
             return false;
