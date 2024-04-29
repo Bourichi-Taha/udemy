@@ -152,3 +152,63 @@ export const getCoursesWithCategory = async ({ title, categoryId }: GetCoursesWi
         return [];
     }
 }
+
+type DashboardCourses = {
+    completedCourses: CourseWithCategoryWithProgress[];
+    coursesInProgress: CourseWithCategoryWithProgress[];
+}
+
+export const getDashboardCourses = async (userId:string):Promise<DashboardCourses> => {
+
+    try {
+        const purshasedCourses = await db.purchase.findMany({
+            where: {
+                userId,
+            },
+            select: {
+                course:{
+                    include: {
+                        category:true,
+                        chapters: {
+                            where: {
+                                isPublished:true,
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        const courses = purshasedCourses.map((purshase)=>({...purshase.course,progress:0})) as CourseWithCategoryWithProgress[];
+
+        for(let course of courses){
+            const progress = await getProgress(userId,course.id);
+            course["progress"] = progress;
+        }
+
+        const completedCourses = courses.filter((course)=>{
+            if (course.progress && course.progress >= 100) {
+                return true;
+            }
+            return false;
+        });
+        const coursesInProgress = courses.filter((course)=>{
+            if (course.progress && course.progress < 100) {
+                return true;
+            }
+            return false;
+        });
+
+        return {
+            completedCourses,
+            coursesInProgress
+        }
+
+    } catch (error) {
+        console.log("[GET_DASHBOARD_COURSES]", error);
+        return {
+            completedCourses:[],
+            coursesInProgress:[]
+        };
+    }
+
+}
