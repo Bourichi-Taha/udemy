@@ -1,6 +1,7 @@
 import { GetPurshaseForCourseIdPage } from "@/actions/purshases";
 import { Chapter, Course, UserProgress } from "@prisma/client"
 import CourseSidebarItem from "./course-sidebar-item";
+import CourseProgress from "../common/course-progress";
 
 
 interface CourseSidebarProps {
@@ -21,7 +22,16 @@ const CourseSidebar = async(props:CourseSidebarProps) => {
             <h1 className="font-semibold">
                 {course.title}
             </h1>
-            {/* chack purchase and add progress TODO */}
+            {
+                purshase && (
+                    <div className="mt-10">
+                        <CourseProgress 
+                            variant="success"
+                            value={progressCount}
+                        />
+                    </div>
+                )
+            }
         </div>
         <div className="flex flex-col w-full">
             {
